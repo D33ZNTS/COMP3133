@@ -1,22 +1,25 @@
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core'; 
+
+import { Component, inject, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import e from 'express';
 
 @Component({
   selector: 'app-missionlist',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './missionlist.component.html',
-  styleUrls: ['./missionlist.component.css']
+  styleUrl: './missionlist.component.css'
 })
-export class MissionlistComponent implements OnInit { 
-  data: any[] = [];
+export class MissionlistComponent  implements OnInit{
+  data:any[] = []
   yearFilter: string = '';
-
-  constructor(private httpClient: HttpClient) {} 
-
-  ngOnInit(): void {
-    this.fetchData();
-  }
-
-  fetchData(): void {
+  httpClient = inject(HttpClient)
+   ngOnInit(): void {
+     this.fetchData()
+   }
+   fetchData(): void {
     let url = 'https://api.spacexdata.com/v3/launches';
     if (this.yearFilter) {
       url += `?launch_year=${this.yearFilter}`;
@@ -29,12 +32,14 @@ export class MissionlistComponent implements OnInit {
       });
   }
 
-  getInput(event: any): void { // Renamed method to getInput
-    this.yearFilter = event.target.value;
+  getinput(e: any): void {
+  
+    this.yearFilter = e.target.value;
     this.fetchData();
   }
 
-  trackByFlightId(index: number, flight: any): string {
+   trackByFlightId(index: number, flight: any): string {
     return flight.flightId;
   }
+  
 }
